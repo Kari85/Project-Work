@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-View Project</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+        }
+        .view {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .view h2 {
+            margin-top: 0;
+        }
+        #calculator input[type="button"] {
+            padding: 10px;
+            margin: 5px;
+            width: 50px;
+        }
+        #calculator input[type="text"] {
+            width: 150px;
+            margin-bottom: 10px;
+        }
+        #text-editor textarea {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 10px;
+        }
+        #text-editor button {
+            padding: 8px;
+            margin-right: 5px;
+        }
+        .quiz-question {
+            margin-bottom: 15px;
+        }
+        .quiz-options label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        #quiz-results {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="view" id="home-view">
+        <h2>View 1: Home Page</h2>
+        <p>This page provides a brief overview of the different views available.</p>
+        <ul>
+            <li><strong>View 2: Calculator</strong> - A simple calculator built using HTML buttons and JavaScript to perform basic arithmetic operations (addition, subtraction, multiplication, and division).</li>
+            <li><strong>View 3: Text Editor</strong> - A basic text editor with a text area for input and buttons to perform simple text manipulations like converting to uppercase and counting words.</li>
+            <li><strong>View 4: Quiz</strong> - A multiple-choice quiz with three questions. Upon submission, it displays the number of correct answers and highlights the correct answers for any incorrect selections. This was implemented using HTML forms and JavaScript to check the answers.</li>
+        </ul>
+    </div>
+
+    <div class="view" id="calculator">
+        <h2>View 2: Calculator</h2>
+        <input type="text" id="display" disabled><br><br>
+        <input type="button" value="7" onclick="appendToDisplay('7')">
+        <input type="button" value="8" onclick="appendToDisplay('8')">
+        <input type="button" value="9" onclick="appendToDisplay('9')">
+        <input type="button" value="+" onclick="appendToDisplay('+')"><br>
+        <input type="button" value="4" onclick="appendToDisplay('4')">
+        <input type="button" value="5" onclick="appendToDisplay('5')">
+        <input type="button" value="6" onclick="appendToDisplay('6')">
+        <input type="button" value="-" onclick="appendToDisplay('-')"><br>
+        <input type="button" value="1" onclick="appendToDisplay('1')">
+        <input type="button" value="2" onclick="appendToDisplay('2')">
+        <input type="button" value="3" onclick="appendToDisplay('3')">
+        <input type="button" value="*" onclick="appendToDisplay('*')"><br>
+        <input type="button" value="0" onclick="appendToDisplay('0')">
+        <input type="button" value="C" onclick="clearDisplay()">
+        <input type="button" value="=" onclick="calculate()">
+        <input type="button" value="/" onclick="appendToDisplay('/')">
+    </div>
+
+    <div class="view" id="text-editor">
+        <h2>View 3: Text Editor</h2>
+        <textarea id="textInput"></textarea><br>
+        <button onclick="convertToUppercase()">Uppercase</button>
+        <button onclick="countWords()">Count Words</button>
+        <p id="wordCount"></p>
+    </div>
+
+    <div class="view" id="quiz-view">
+        <h2>View 4: Quiz</h2>
+        <form id="quiz-form">
+            <div class="quiz-question">
+                <p>Question 1: What is the capital of Finland?</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q1" value="a"> Helsinki</label>
+                    <label><input type="radio" name="q1" value="b"> Tampere</label>
+                    <label><input type="radio" name="q1" value="c"> Turku</label>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <p>Question 2: Which of these is a popular Finnish dish?</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q2" value="a"> Pizza</label>
+                    <label><input type="radio" name="q2" value="b"> Sushi</label>
+                    <label><input type="radio" name="q2" value="c"> Karjalanpiirakka</label>
+                </div>
+            </div>
+
+            <div class="quiz-question">
+                <p>Question 3: What is the currency of Finland?</p>
+                <div class="quiz-options">
+                    <label><input type="radio" name="q3" value="a"> Swedish Krona</label>
+                    <label><input type="radio" name="q3" value="b"> Euro</label>
+                    <label><input type="radio" name="q3" value="c"> Norwegian Krone</label>
+                </div>
+            </div>
+
+            <button type="button" onclick="submitQuiz()">Submit Quiz</button>
+        </form>
+        <div id="quiz-results" style="display: none;"></div>
+    </div>
+
+    <script>
+        // Calculator functionality
+        let display = document.getElementById('display');
+
+        function appendToDisplay(value) {
+            display.value += value;
+        }
+
+        function clearDisplay() {
+            display.value = '';
+        }
+
+        function calculate() {
+            try {
+                display.value = eval(display.value);
+            } catch (error) {
+                display.value = 'Error';
+            }
+        }
+
+        // Text Editor functionality
+        function convertToUppercase() {
+            let textInput = document.getElementById('textInput');
+            textInput.value = textInput.value.toUpperCase();
+        }
+
+        function countWords() {
+            let textInput = document.getElementById('textInput');
+            let words = textInput.value.trim().split(/\s+/).filter(word => word !== '').length;
+            document.getElementById('wordCount').textContent = `Word Count: ${words}`;
+        }
+
+        // Quiz functionality
+        function submitQuiz() {
+            const form = document.getElementById('quiz-form');
+            const resultsDiv = document.getElementById('quiz-results');
+            let correctAnswers = 0;
+            const answers = {
+                q1: 'a',
+                q2: 'c',
+                q3: 'b'
+            };
+            const questions = form.querySelectorAll('.quiz-question');
+
+            questions.forEach(question => {
+                const questionName = question.querySelector('p').textContent.split(':')[0].toLowerCase().replace(/\s+/g, '');
+                const selectedOption = form.querySelector(`input[name="${questionName}"]:checked`);
+                const correctAnswer = answers[questionName];
+                const options = question.querySelectorAll('.quiz-options label');
+
+                options.forEach(label => {
+                    const input = label.querySelector('input');
+                    label.style.fontWeight = 'normal'; // Reset previous highlighting
+
+                    if (input.value === correctAnswer) {
+                        label.style.fontWeight = 'bold'; // Highlight correct answer
+                    }
+                });
+
+                if (selectedOption && selectedOption.value === correctAnswer) {
+                    correctAnswers++;
+                }
+            });
+
+            resultsDiv.textContent = `You got ${correctAnswers} out of ${questions.length} correct!`;
+            resultsDiv.style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>
